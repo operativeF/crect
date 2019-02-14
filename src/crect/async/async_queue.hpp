@@ -26,7 +26,7 @@ class async_queue
 private:
   /** @brief Definition of each queue element. */
   struct queue_element {
-    time::system_clock::time_point baseline;  /**< Time for exection. */
+    time::system_clock_general::time_point baseline; /**< Time for execution. */
     uint32_t job_isr_id;                      /**< The job's ISR ID to pend. */
     queue_element *next;                      /**< The next element. */
   };
@@ -63,7 +63,7 @@ public:
   * @param[in] time    The time for the ISR to execute.
   * @param[in] isr_id  The ISR to execute at said time.
   */
-  void push(time::system_clock::time_point time, uint32_t isr_id)
+  void push(time::system_clock_general::time_point time, uint32_t isr_id)
   {
     auto _new = _free;
 

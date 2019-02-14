@@ -15,7 +15,7 @@ namespace timer
  * @brief   Convenience definition of the max SysTick duration.
  */
 static const constexpr auto max_systick_duration =
-  crect::time::system_clock::duration{SysTick_LOAD_RELOAD_Msk};
+  crect::time::system_clock_general::duration{SysTick_LOAD_RELOAD_Msk};
 
 /**
  * @brief   Convenience definition to pend SysTick.

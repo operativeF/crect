@@ -20,9 +20,9 @@ namespace timer
  *
  * @param[in] time    The time to set the SysTick to execute.
  */
-inline void set(time::system_clock::time_point time)
+inline void set(time::system_clock_general::time_point time)
 {
-  auto current_time = crect::claim<crect::Rsystem_clock>([](auto &now){
+  auto current_time = crect::claim<SysClock>([](auto &now){
     return now();
   });
 
@@ -36,7 +36,7 @@ inline void set(time::system_clock::time_point time)
   else
   {
     /* If the difference is in the past, trigger directly. */
-    if (diff <= time::system_clock::duration{0})
+    if (diff <= time::system_clock_general::duration{0})
       timer::pend();
 
     SysTick->LOAD = diff.count();
@@ -68,7 +68,7 @@ inline void set_max()
 extern "C" void SysTick_Handler()
 {
   /* Always get the current time. */
-  auto current_time = crect::claim<crect::Rsystem_clock>([](auto &now){
+  auto current_time = crect::claim<SysClock>([](auto &now){
     return now();
   });
 

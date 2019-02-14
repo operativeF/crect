@@ -6,6 +6,7 @@
 #pragma once
 
 #include "crect/crect.hpp"
+#include "crect/clock.hpp"
 #include "crect/async/async_queue.hpp"
 
 #include <chrono>
@@ -23,10 +24,10 @@ namespace details
  * @param[in] duration  The time until the job shall be executed.
  * @param[in] isr       The Job's ISR value.
  */
-static void async_impl_dur(time::system_clock::duration dur, unsigned isr)
+static void async_impl_dur(time::system_clock_general::duration dur, unsigned isr)
 {
   /* Always get the current time. */
-  auto current_time = claim<Rsystem_clock>([](auto &now){
+  auto current_time = claim<SysClock>([](auto &now){
     return now();
   });
 
@@ -42,7 +43,7 @@ static void async_impl_dur(time::system_clock::duration dur, unsigned isr)
  * @param[in] time      The absolute time the job shall be executed.
  * @param[in] isr       The Job's ISR value.
  */
-static void async_impl_time(time::system_clock::time_point time, unsigned isr)
+static void async_impl_time(time::system_clock_general::time_point time, unsigned isr)
 {
   /* Claim the async queue and manipulate. */
   claim<Rasync>([&](auto &async_queue){
@@ -68,7 +69,7 @@ constexpr void async(std::chrono::duration<Rep, Period> duration)
   using namespace std::chrono;
   using idx = typename Job::isr::index;
 
-  auto dur = duration_cast<time::system_clock::duration>(duration);
+  auto dur = duration_cast<time::system_clock_general::duration>(duration);
 
   details::async_impl_dur(dur, idx::value);
 }
@@ -88,7 +89,7 @@ constexpr void async(std::chrono::duration<Rep, Period> duration, unsigned isr)
 {
   using namespace std::chrono;
 
-  auto dur = duration_cast<time::system_clock::duration>(duration);
+  auto dur = duration_cast<time::system_clock_general::duration>(duration);
 
   details::async_impl_dur(dur, isr);
 }
@@ -102,7 +103,7 @@ constexpr void async(std::chrono::duration<Rep, Period> duration, unsigned isr)
  */
 
 template <typename Job>
-constexpr void async(time::system_clock::time_point time)
+constexpr void async(time::system_clock_general::time_point time)
 {
   using idx = typename Job::isr::index;
   details::async_impl_time(time, idx::value);
@@ -117,7 +118,7 @@ constexpr void async(time::system_clock::time_point time)
  * @param[in] isr       The ISR ID to pend.
  */
 
-inline void async(time::system_clock::time_point time, unsigned isr)
+inline void async(time::system_clock_general::time_point time, unsigned isr)
 {
   details::async_impl_time(time, isr);
 }

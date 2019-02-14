@@ -93,11 +93,13 @@ struct job_to_nvic_printer
 template <typename JobList>
 constexpr void initialize_jobs_impl()
 {
+#if defined(CoreDebug_DEMCR_TRCENA_Pos)
   /* Enable DWT */
   CoreDebug->DEMCR |= (1UL << CoreDebug_DEMCR_TRCENA_Pos);
   //DWT->LAR = 0xC5ACCE55;
   DWT->CYCCNT = 0;
   DWT->CTRL |= (1UL << DWT_CTRL_CYCCNTENA_Pos);
+#endif
 
   /* Fill the ISR settings. */
   for_each<job_to_nvic_printer, JobList>();

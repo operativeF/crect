@@ -110,7 +110,7 @@ struct job_to_isr_mask
  */
 template <unsigned PRIO, typename ISR, typename... Res>
 struct job_to_isr_mask< job<PRIO, ISR, Res...> > :
-    kvasir::mpl::integral_constant<unsigned, (1u << (ISR::index::value % 32))>
+    kvasir::mpl::integral_constant<unsigned, (1u << (ISR::index::value / 32))> // @TODO: Obviously this is incorrect, FIXME
 {
 };
 
