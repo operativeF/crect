@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <type_traits>
 
 #include "kvasir/mpl/mpl.hpp"
 #include "crect/crect.hpp"
@@ -32,7 +33,7 @@ extern "C"
 template <typename A>
 struct _same_isr_value {
   template <typename B>
-  using f = kvasir::mpl::bool_<A::value ==  B::isr::index::value>;
+  using f = std::bool_constant<A::value ==  B::isr::index::value>;
 };
 
 /**
@@ -79,7 +80,7 @@ template <unsigned I>
 struct get_vector_from_position
 {
   using f = typename isr_selector<
-        typename find_job_isr<kvasir::mpl::integral_constant<unsigned, I>>::f
+        typename find_job_isr<std::integral_constant<unsigned, I>>::f
       >::isr;
 };
 

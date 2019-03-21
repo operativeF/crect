@@ -29,7 +29,7 @@ struct find_resource_impl
   using f = kvasir::mpl::eager::find_if<resource_tree<JobList>,
                                     _same_resource_id<Resource>::template f >;
 
-  static_assert(!std::is_same< f, kvasir::mpl::list<> >::value,
+  static_assert(!std::is_same_v< f, kvasir::mpl::list<> >,
                 "The resource in not registered in crect");
 
   static_assert(kvasir::mpl::eager::pop_front<f>::front::is_unique::value == false,
@@ -49,7 +49,7 @@ struct find_unique_resource_impl
   using f = kvasir::mpl::eager::find_if<resource_tree<JobList>,
                                     _same_resource_id<Resource>::template f >;
 
-  static_assert(!std::is_same< f, kvasir::mpl::list<> >::value,
+  static_assert(!std::is_same_v< f, kvasir::mpl::list<> >,
                 "The resource in not registered in crect");
 
   static_assert(kvasir::mpl::eager::pop_front<f>::front::is_unique::value == true,

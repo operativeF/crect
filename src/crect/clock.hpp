@@ -7,6 +7,8 @@
 
 #include <cstdint>
 #include <chrono>
+#include <type_traits>
+
 #include "kvasir/mpl/mpl.hpp"
 #include "crect/details/job_resource_definitions.hpp"
 #include "crect/srp/locks.hpp"
@@ -54,7 +56,7 @@ struct system_clock
  * @brief   Convenience definition of the clock resource.
  */
 using Rsystem_clock = resource<
-    kvasir::mpl::integral_constant< decltype(&time::system_clock::now),
+    std::integral_constant< decltype(&time::system_clock::now),
                                     &time::system_clock::now >,
     false >;
 

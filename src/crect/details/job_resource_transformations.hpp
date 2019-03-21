@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <type_traits>
+
 #include "kvasir/mpl/mpl.hpp"
 #include "crect/details/job_resource_definitions.hpp"
 #include "crect/details/job_resource_comparisons.hpp"
@@ -74,7 +76,7 @@ struct job_to_priority
  */
 template <unsigned PRIO, typename ISR, typename... Res>
 struct job_to_priority< job<PRIO, ISR, Res...> > :
-    kvasir::mpl::integral_constant<unsigned, PRIO>
+    std::integral_constant<unsigned, PRIO>
 {
 };
 
@@ -110,7 +112,7 @@ struct job_to_isr_mask
  */
 template <unsigned PRIO, typename ISR, typename... Res>
 struct job_to_isr_mask< job<PRIO, ISR, Res...> > :
-    kvasir::mpl::integral_constant<unsigned, (1u << (ISR::index::value % 32))>
+    std::integral_constant<unsigned, (1u << (ISR::index::value % 32))>
 {
 };
 

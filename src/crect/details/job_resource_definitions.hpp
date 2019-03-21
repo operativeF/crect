@@ -6,6 +6,8 @@
 #pragma once
 
 #include <cstdint>
+#include <type_traits>
+
 #include "kvasir/mpl/mpl.hpp"
 #include "crect/utils.hpp"
 
@@ -15,7 +17,7 @@ namespace crect
  * @brief Job maximum priority.
  */
 using max_priority =
-    kvasir::mpl::integral_constant< unsigned, (1U << __NVIC_PRIO_BITS) - 1U >;
+    std::integral_constant< unsigned, (1U << __NVIC_PRIO_BITS) - 1U >;
 
 /**
  * @brief Job type definition.
@@ -27,7 +29,7 @@ using max_priority =
 template < unsigned Prio, typename ISR, typename... Res >
 struct job
 {
-  using prio      = kvasir::mpl::integral_constant< unsigned, Prio >;
+  using prio      = std::integral_constant< unsigned, Prio >;
   using isr       = ISR;
   using resources = kvasir::mpl::eager::flatten< kvasir::mpl::list< Res... > >;
 
@@ -59,29 +61,29 @@ struct resource
  * @tparam Unique   Flag to indicate if it is a unique resource.
  * @tparam Jobs     Parameter pack of jobs.
  */
-template < typename T, T V, bool Unique, typename... Jobs >
-struct resource< kvasir::mpl::integral_constant< T, V >, Unique, Jobs... >
+template < auto V, bool Unique, typename... Jobs >
+struct resource< std::integral_constant< decltype(V), V >, Unique, Jobs... >
 {
-  using is_unique = kvasir::mpl::bool_< Unique >;
+  using is_unique = std::bool_constant< Unique >;
   using jobs      = kvasir::mpl::eager::flatten< kvasir::mpl::list< Jobs... > >;
 
   /**
-   * @brief     Converts the integral_constant to an reference to the object.
+   * @brief     Converts the integral_constant to a reference to the object.
    *
    * @return    The reference to the object.
    */
-  static std::remove_pointer_t< T >& as_object() noexcept
+  static std::remove_pointer_t< decltype(V) >& as_object() noexcept
   {
     return *V;
   }
 
-  using object = kvasir::mpl::integral_constant< T, V >;
+  using object = std::integral_constant< decltype(V), V >;
 
-  static_assert((std::is_pointer< util::get_integral_type< object > >::value ||
-                 util::is_nullptr< object >::value),
+  static_assert((std::is_pointer_v< util::get_integral_type< object > > ||
+                 std::is_null_pointer_v< object >),
                 "The type of the object must be a pointer.");
 
-  static_assert(util::is_nullptr< object >::value == false,
+  static_assert(std::is_null_pointer_v< object > == false,
                 "The object cannot be nullptr, does not make sense.");
 };
 
@@ -97,7 +99,7 @@ struct resource< kvasir::mpl::integral_constant< T, V >, Unique, Jobs... >
 template < typename T, std::uintptr_t Address, bool Unique, typename... Jobs >
 struct resource< util::memory_mapper< T, Address >, Unique, Jobs... >
 {
-  using is_unique = kvasir::mpl::bool_< Unique >;
+  using is_unique = std::bool_constant< Unique >;
   using jobs      = kvasir::mpl::eager::flatten< kvasir::mpl::list< Jobs... > >;
 
   /**
@@ -140,7 +142,7 @@ using make_unique_resource = resource< Object, true, Jobs... >;
  *        auto templates.
  */
 #define CRECT_OBJECT_LINK(obj) \
-  kvasir::mpl::integral_constant< decltype(&obj), (&obj) >
+  std::integral_constant< decltype(&obj), (&obj) >
 
 /**
  * @brief Convenience define for creating an object link to memory mapped

@@ -12,6 +12,8 @@
  *
  ****************************************************************************/
 
+#include <type_traits>
+
 #include "kvasir/mpl/mpl.hpp"
 #include "crect/details/job_resource_definitions.hpp"
 #include "crect/details/job_resource_comparisons.hpp"
@@ -51,7 +53,7 @@ template <typename JobList, typename Resource>
 using get_priority_ceiling =
                 kvasir::mpl::eager::fold_right<
                   details::resource_to_priority_list<JobList, Resource>,
-                  kvasir::mpl::integral_constant<unsigned, 0>,
+                  std::integral_constant<unsigned, 0>,
                   kvasir::mpl::eager::max
                 >;
 
@@ -63,7 +65,7 @@ using get_priority_ceiling =
 // using get_source_masking =
 //                 kvasir::mpl::eager::fold_right<
 //                   details::resource_to_isr_pos_list<JobList, Resource>,
-//                   kvasir::mpl::integral_constant<unsigned, 0>,
+//                   std::integral_constant<unsigned, 0>,
 //                   kvasir::mpl::eager::bitwise_or
 //                 >;
 

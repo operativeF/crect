@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <type_traits>
+
 #include "kvasir/mpl/mpl.hpp"
 
 /* crect system/MCU configuration. */
@@ -29,7 +31,7 @@ extern crect::async_queue<__CRECT_ASYNC_QUEUE_SIZE> crect_async_queue;
 namespace crect
 {
 using Rasync =
-    resource<kvasir::mpl::integral_constant<decltype(&crect_async_queue),
+    resource<std::integral_constant<decltype(&crect_async_queue),
                                             &crect_async_queue>,
              false>;
 

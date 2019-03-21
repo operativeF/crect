@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <type_traits>
+
 #include "kvasir/mpl/mpl.hpp"
 
 namespace crect
@@ -20,7 +22,7 @@ using isr_function_pointer = void (*)(void);
  * @brief ISR index alias.
  */
 template <int I>
-using idx = kvasir::mpl::integral_constant<int, I>;
+using idx = std::integral_constant<int, I>;
 
 /**
  * @brief Base definition of an ISR type, should not be used.

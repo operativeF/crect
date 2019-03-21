@@ -32,7 +32,7 @@ inline void pend(unsigned id)
 }
 
 /**
- * @brief Clear an pending crect job.
+ * @brief Clear a pending crect job.
  *
  * @tparam Job  The job to clear.
  */
@@ -44,7 +44,7 @@ constexpr void clear()
 }
 
 /**
- * @brief Clear an pending crect job.
+ * @brief Clear a pending crect job.
  *
  * @param[in] id    The interrupt ID to clear.
  */

@@ -19,7 +19,7 @@ namespace details
  * @tparam  Resource  Resource to check.
  */
 template <typename Resource>
-using is_not_unique_resource = kvasir::mpl::bool_< !Resource::is_unique::value >;
+using is_not_unique_resource = std::bool_constant< !Resource::is_unique::value >;
 
 /**
  * @brief Implementation to extract resources that have the unique flag set.
@@ -69,7 +69,7 @@ using is_unique_list = kvasir::mpl::eager::invert<
             std::is_same,
             SortedResourceList,
             kvasir::mpl::eager::rotate<SortedResourceList, 1> >,
-        kvasir::mpl::bool_<false>,
+        std::bool_constant<false>,
         kvasir::mpl::eager::logical_or > >;
 
 /**
@@ -91,7 +91,7 @@ using jobs_to_unique_sorted = kvasir::mpl::eager::sort<
  * @tparam  JobList    List of jobs to check.
  */
 template <typename JobList>
-using is_unique_job_list = kvasir::mpl::bool_<
+using is_unique_job_list = std::bool_constant<
   details::is_unique_list< details::jobs_to_unique_sorted<JobList> >::value ||
   (kvasir::mpl::eager::size< details::jobs_to_unique_sorted<JobList> >::value <= 1) >;
 /**
