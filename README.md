@@ -17,6 +17,7 @@ requirements at run-time are minimal with:
 **Compile time:**
 
 * Uses the Kvasir MPL library for metaprogramming.
+* The project will be ported over to the Boost MP11 library after unit testing has been completed.
 
 **Runtime:**
 
@@ -60,9 +61,11 @@ Boost Software License - Version 1.0
 
 List of contributors in alphabetical order:
 
+* [Thomas Figueroa](https:://www.github.com/operativeF)
 * [Emil Fresk](https://www.github.com/korken89)
 * [Odin Holmes](https://www.github.com/odinthenerd)
 * [Carlos van Rooijen](https://www.github.com/CvRXX)
+
 
 ## References
 
