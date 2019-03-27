@@ -5,52 +5,42 @@
 
 #pragma once
 
+#include "stm32f411xe.h"
 
 namespace crect
 {
 
-/**
- * @brief Synchronous pend of an crect job.
- *
- * @tparam Job  The job to pend.
- */
-template <typename Job>
-constexpr void pend()
+template<auto* nLocal>
+struct NVIC_Access
 {
-  using ISRn = typename Job::isr::index;
-  NVIC->ISPR[ISRn::value >> 5UL] = (1UL << (ISRn::value & 0x1FUL));
-}
+    template<typename Job>
+    constexpr void pend()
+    {
+        using ISRn = typename Job::isr::index;
+        nLocal->ISPR[ISRn::value >> 5UL] = (1UL << (ISRn::value & 31UL));
+    }
 
-/**
- * @brief Synchronous pend of an crect job.
- *
- * @param[in] id    The interrupt ID to pend.
- */
-inline void pend(unsigned id)
-{
-  NVIC->ISPR[id >> 5UL] = (1UL << (id & 0x1FUL));
-}
+    constexpr void pend(unsigned id)
+    {
+        nLocal->ISPR[id >> 5UL] = (1UL << (id & 31UL));
+    }
 
-/**
- * @brief Clear a pending crect job.
- *
- * @tparam Job  The job to clear.
- */
-template <typename Job>
-constexpr void clear()
-{
-  using ISRn = typename Job::isr::index;
-  NVIC->ICPR[ISRn::value >> 5UL] = (1UL << (ISRn::value & 0x1FUL));
-}
+    template <typename Job>
+    constexpr void clear()
+    {
+      using ISRn = typename Job::isr::index;
+      nLocal->ICPR[ISRn::value >> 5UL] = (1UL << (ISRn::value & 31UL));
+    }
 
-/**
- * @brief Clear a pending crect job.
- *
- * @param[in] id    The interrupt ID to clear.
- */
-inline void clear(unsigned id)
-{
-  NVIC->ICPR[id >> 5UL] = (1UL << (id & 0x1FUL));
-}
+    /**
+     * @brief Clear a pending crect job.
+     *
+     * @param[in] id    The interrupt ID to clear.
+     */
+    constexpr void clear(unsigned id)
+    {
+      nLocal->ICPR[id >> 5UL] = (1UL << (id & 31UL));
+    }
+};
 
 } /* END namespace crect */
