@@ -5,8 +5,8 @@
  *      Author: Thomas Figueroa
  */
 
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE main_tests
+#define BOOST_TEST_MAIN
+#define BOOST_TEST_MODULE main_test
 
 #include <boost/test/unit_test.hpp>
 #include <crect/details/job_resource_comparisons.hpp>

@@ -1,29 +1,38 @@
-project(testlib VERSION 0.1 LANGUAGES CXX)
 
-add_executable(
-    job_comp_test job_comparisons.test.cpp
+set(Boost_USE_STATIC_LIBS ON)
+
+find_package(Boost COMPONENTS REQUIRED unit_test_framework)
+add_library(boost INTERFACE IMPORTED)
+
+set_property(TARGET boost PROPERTY
+    INTERFACE_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
 )
 
-add_executable(
-    unique_test unique.test.cpp
+enable_testing()
+
+add_executable(main_test
+    unique.test.cpp
+    job_resource_transforms.test.cpp
+    job_comparisons.test.cpp
 )
 
-add_executable(
-    job_res_test job_resource_transforms.test.cpp
+target_compile_features(main_test
+    PRIVATE cxx_std_17
 )
 
-target_link_libraries(job_comp_test
-    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+target_include_directories(main_test
+    PRIVATE ${Boost_INCLUDE_DIR}
+    PRIVATE ../
+    PRIVATE ../src
+    PRIVATE ../deps/kvasir/mpl/src
 )
 
-target_link_libraries(unique_test
-    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+target_link_directories(main_test
+    PRIVATE ${Boost_LIBRARY_DIR}
 )
 
-target_link_libraries(job_res_test
-    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+target_link_libraries(main_test
+    PRIVATE ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
 )
 
-add_test(NAME job_res_test COMMAND job_res_test)
-add_test(NAME job_comp_test COMMAND job_comp_test)
-add_test(NAME uniquetest COMMAND uniquetest)
+add_test(NAME test COMMAND main_test)

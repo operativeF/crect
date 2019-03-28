@@ -68,11 +68,14 @@ struct job_to_nvic_printer
       constexpr auto index = (static_cast<uint32_t>(ISRn::value) & 0xFUL) - 4UL;
 
       /* Enable system interrupt. */
-#if __CORTEX_M == 7U
-      SCB->SHPR[index] = util::priority_to_NVIC_priority(Prio::value);
-#else // Not Cortex-M7
-      SCB->SHP[index] = util::priority_to_NVIC_priority(Prio::value);
-#endif
+      if constexpr(__CORTEX_M == 7U)
+      {
+        SCB->SHPR[index] = util::priority_to_NVIC_priority(Prio::value);
+      }
+      else
+      {
+        SCB->SHP[index] = util::priority_to_NVIC_priority(Prio::value);
+      }
     }
     else
     {

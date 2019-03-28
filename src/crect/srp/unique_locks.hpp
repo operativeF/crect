@@ -13,7 +13,7 @@
 namespace crect
 {
 
-template<auto* nvic_local>
+template<auto* const nvic_local>
 struct Unique_Access
 {
 

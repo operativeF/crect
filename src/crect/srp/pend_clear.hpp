@@ -10,7 +10,7 @@
 namespace crect
 {
 
-template<auto* nLocal>
+template<auto* const nLocal>
 struct NVIC_Access
 {
     template<typename Job>

@@ -4,14 +4,7 @@ project(crect VERSION 0.1 LANGUAGES CXX C)
 
 include(GNUInstallDirs)
 
-find_package(Boost COMPONENTS system filesystem unit_test_framework REQUIRED)
-add_library(boost INTERFACE IMPORTED)
-
-set_property(TARGET boost PROPERTY
-    INTERFACE_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
-)
-
-enable_testing()
+set(CMAKE_CXX_STANDARD 17)
 
 add_subdirectory(Test)
 include_directories(src/crect)

@@ -4,6 +4,16 @@
 # Build dir
 build
 
+# Dependencies dir
+deps
+
+# Eclipse dir
+.settings
+
+# VS Code dir
+.vscode
+.vs
+
 # Compiled Object files
 *.slo
 *.lo
