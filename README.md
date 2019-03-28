@@ -1,5 +1,7 @@
 # crect: A C++, compile-time, reactive RTOS
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/166fbaa6674d4c9e8bda95c90f6ccca0)](https://app.codacy.com/app/operativeF/crect?utm_source=github.com&utm_medium=referral&utm_content=operativeF/crect&utm_campaign=Badge_Grade_Settings)
+
 **crect** (pronounced _correct_) is a C++ library for generating a
 scheduler (_at compile time_) for Cortex-M series MCUs, which
 **_guarantees_** dead-lock free and data-race free execution.
