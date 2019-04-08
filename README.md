@@ -19,7 +19,7 @@ requirements at run-time are minimal with:
 **Compile time:**
 
 * Uses the Kvasir MPL library for metaprogramming.
-* The project will be ported over to the Boost MP11 library after unit testing has been completed.
+* The project will be ported over to the Boost TMP library after unit testing has been completed.
 
 **Runtime:**
 
