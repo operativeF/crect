@@ -1,4 +1,5 @@
 //          Copyright Emil Fresk 2017.
+//                    Thomas Figueroa 2019.
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE.md or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -10,11 +11,8 @@
 #include "crect/details/job_resource_comparisons.hpp"
 #include "crect/details/job_resource_transformations.hpp"
 
-namespace crect
+namespace crect::details
 {
-namespace details
-{
-
 /**************************************************************************/
 /* Resource tree generation (impl)                                        */
 /**************************************************************************/
@@ -55,9 +53,10 @@ struct make_resource_tree_impl< kvasir::mpl::list<> >
   using f = kvasir::mpl::list<>;
 };
 
-} /* END namespace details */
+} // END namespace crect::details
 
-
+namespace crect
+{
 /**
  * @brief Interface to generate the resource tree.
  *
@@ -86,4 +85,4 @@ template <typename JobList>
 using resource_tree = typename make_resource_tree<JobList>::result;
 
 
-} /* END namespace crect */
+} // END namespace crect

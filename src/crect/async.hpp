@@ -10,11 +10,7 @@
 
 #include <chrono>
 
-extern crect::async_queue<__CRECT_ASYNC_QUEUE_SIZE> crect_async_queue;
-
-namespace crect
-{
-namespace details
+namespace crect::details
 {
 
 /*
@@ -23,7 +19,7 @@ namespace details
  * @param[in] duration  The time until the job shall be executed.
  * @param[in] isr       The Job's ISR value.
  */
-static void async_impl_dur(time::system_clock::duration dur, unsigned isr)
+static void async_impl_dur(time::system_clock::duration dur, crect::isr_id isr)
 {
   /* Always get the current time. */
   auto current_time = claim<Rsystem_clock>([](auto &now){
@@ -32,7 +28,7 @@ static void async_impl_dur(time::system_clock::duration dur, unsigned isr)
 
   /* Claim the async queue and manipulate. */
   claim<Rasync>([&](auto &async_queue){
-    async_queue.push(current_time + dur, isr);
+    async_queue.insert(current_time + dur, isr);
   });
 }
 
@@ -42,15 +38,18 @@ static void async_impl_dur(time::system_clock::duration dur, unsigned isr)
  * @param[in] time      The absolute time the job shall be executed.
  * @param[in] isr       The Job's ISR value.
  */
-static void async_impl_time(time::system_clock::time_point time, unsigned isr)
+static void async_impl_time(time::system_clock::time_point time, crect::isr_id isr)
 {
   /* Claim the async queue and manipulate. */
   claim<Rasync>([&](auto &async_queue){
-    async_queue.push(time, isr);
+    async_queue.insert(time, isr);
   });
 }
 
-} /* END namespace details */
+} /* END namespace crect::details */
+
+namespace crect
+{
 
 /**
  * @brief Asynchronous pend of a job.
@@ -84,7 +83,7 @@ constexpr void async(std::chrono::duration<Rep, Period> duration)
  */
 
 template <typename Rep, typename Period>
-constexpr void async(std::chrono::duration<Rep, Period> duration, unsigned isr)
+constexpr void async(std::chrono::duration<Rep, Period> duration, crect::isr_id isr)
 {
   using namespace std::chrono;
 
@@ -117,7 +116,7 @@ constexpr void async(time::system_clock::time_point time)
  * @param[in] isr       The ISR ID to pend.
  */
 
-inline void async(time::system_clock::time_point time, unsigned isr)
+inline void async(time::system_clock::time_point time, crect::isr_id isr)
 {
   details::async_impl_time(time, isr);
 }

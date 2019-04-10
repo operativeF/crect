@@ -8,9 +8,7 @@
 #include "kvasir/mpl/mpl.hpp"
 #include "crect/details/job_resource_definitions.hpp"
 
-namespace crect
-{
-namespace details
+namespace crect::details
 {
 
 /**************************************************************************/
@@ -67,5 +65,4 @@ template < typename A, typename B >
 using _different_resource_id_2r =
     typename _different_resource_id< A >::template f< B >;
 
-} /* END namespace details */
-} /* END namespace crect */
+} // END namespace crect::details

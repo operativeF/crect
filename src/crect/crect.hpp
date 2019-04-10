@@ -25,11 +25,11 @@
 #include "crect/srp/source_masking.hpp"
 #include "crect/srp/unique.hpp"
 
-/* Async resource definition for now... */
-extern crect::async_queue<__CRECT_ASYNC_QUEUE_SIZE> crect_async_queue;
-
 namespace crect
 {
+
+inline static crect::async_queue<__CRECT_ASYNC_QUEUE_SIZE, crect::time::system_clock> crect_async_queue;
+
 using Rasync =
     resource<std::integral_constant<decltype(&crect_async_queue),
                                             &crect_async_queue>,
@@ -40,17 +40,15 @@ using Jasync =
         make_system_isr<SysTick_IRQn>,    // ISR connection and location
         Rasync, Rsystem_clock             // Possible resource claims
        >;
-}
+} // end namespace crect
 
-/* crect job and user_job_list configuration. */
-#include "crect_user_config.hpp"
+using user_job_list = kvasir::mpl::list<>;
 
 namespace crect
 {
 
 /** Create the system job list. */
-using system_job_list =
-    kvasir::mpl::eager::join<kvasir::mpl::list<Jasync>, user_job_list>;
+using system_job_list = kvasir::mpl::eager::join<kvasir::mpl::list<Jasync>, user_job_list>;
 
 /** Check the system job list for unique resources. */
 static_assert(is_unique_job_list< system_job_list >::value == true,
@@ -61,16 +59,20 @@ static_assert(is_unique_job_list< system_job_list >::value == true,
  *
  * @tparam Resource   The resource to lock.
  */
-template <typename Resource>
-#if __CORTEX_M  >= 3
-/* BASEPRI based for Cortex-M3 and above */
-using lock = lock_impl_basepri<get_priority_ceiling<system_job_list,
-                                                    Resource>>;
-#else
-/* Source masking based for Cortex-M0(+) */
-using lock = lock_impl_basepri<get_source_masking<system_job_list,
-                                                  Resource>>;
-#endif
+template<typename Resource>
+constexpr void lock()
+{
+    if constexpr(__cortex_m  >= 3)
+    {
+        lock_impl_basepri<get_priority_ceiling<system_job_list,
+                                                  Resource>> {};
+    }
+    else
+    {
+        lock_impl_basepri<get_source_masking<system_job_list,
+                                                  Resource>> {};
+    }
+}
 
 /**
  * @brief  A convenience definition of the initialization of crect.

@@ -21,11 +21,8 @@
 #include "crect/details/resource_tree.hpp"
 #include "crect/details/resource_search.hpp"
 
-namespace crect
+namespace crect::details
 {
-namespace details
-{
-
 
 /**
  * @brief Extracts the priorities of the jobs connected to the resource.
@@ -41,7 +38,10 @@ using resource_to_priority_list =
                   job_to_priority
                 > >;
 
-} /* END namespace details */
+} // END namespace crect::details
+
+namespace crect
+{
 
 /**
  * @brief Extracts the priority ceiling of the jobs connected to the resource.

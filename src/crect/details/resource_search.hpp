@@ -11,11 +11,8 @@
 #include "crect/details/job_resource_transformations.hpp"
 #include "crect/details/resource_tree.hpp"
 
-namespace crect
+namespace crect::details
 {
-namespace details
-{
-
 /**
  * @brief Finds a non-unique resource in the resource tree (implementation).
  *
@@ -78,5 +75,4 @@ using find_unique_resource = typename kvasir::mpl::eager::pop_front<
                         typename find_unique_resource_impl<JobList, Resource>::f
                       >::front;
 
-} /* END namespace details */
-} /* END namespace crect */
+} // END namespace crect::details

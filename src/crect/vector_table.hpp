@@ -74,7 +74,7 @@ struct isr_selector<kvasir::mpl::list<>>
 /**
  * @brief Extracts the ISR from a position.
  *
- * @tparam I   Position to extract the ISR rom.
+ * @tparam I   Position to extract the ISR from.
  */
 template <unsigned I>
 struct get_vector_from_position

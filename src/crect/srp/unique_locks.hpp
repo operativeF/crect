@@ -10,6 +10,8 @@
 #include "crect/utils.hpp"
 #include "crect/srp/unique.hpp"
 
+#define _PC_MODE (true)
+
 namespace crect
 {
 
@@ -33,6 +35,16 @@ struct Unique_Access
 
 	  /* Barriers to guarantee the instruction took hold before continuing. */
 	  arm_intrinsics::barrier_entry_with_sync();
+
+	  if constexpr(_PC_MODE)
+	  {
+
+	  }
+	  else
+	  {
+		  /* Barriers to guarantee the instruction took hold before continuing. */
+	      arm_intrinsics::barrier_entry_with_sync();
+	  }
 	}
 
 	/**
@@ -48,6 +60,16 @@ struct Unique_Access
 
 	  /* Barriers to guarantee no reordering before continuing. */
 	  arm_intrinsics::barrier_exit();
+
+	  if constexpr(_PC_MODE)
+	  {
+
+	  }
+	  else
+	  {
+		  /* Barriers to guarantee no reordering before continuing. */
+	      arm_intrinsics::barrier_exit();
+	  }
 
 	  /* Unlock the resource. */
 	  nvic_local->ISER[ISRn::value >> 5UL] = (1UL << (ISRn::value & 31UL));
@@ -91,4 +113,4 @@ inline void unique_unlock()
   NVIC->ISER[ISRn::value >> 5UL] = (1UL << (ISRn::value & 0x1FUL));
 }
 
-} /* END namespace crect */
+} // END namespace crect

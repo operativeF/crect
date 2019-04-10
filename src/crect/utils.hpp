@@ -6,16 +6,13 @@
 #pragma once
 
 #include <cstdint>
+#include <limits>
 #include <type_traits>
 
 #include "kvasir/mpl/mpl.hpp"
 #include "crect_system_config.hpp"
 
-namespace crect
-{
-namespace util
-{
-namespace details
+namespace crect::util::details
 {
 
 /**
@@ -34,7 +31,6 @@ struct get_integral_type_impl
 /**
  * @brief Get the type of an mpl::integral_constant, general case.
  *
- * @tparam T    Type of the integral_constant.
  * @tparam val  Value of the integral_constant.
  */
 template <auto val>
@@ -48,9 +44,9 @@ struct get_integral_type_impl<std::integral_constant<decltype(val), val>>
  */
 template <>
 struct get_integral_type_impl<
-    std::integral_constant<decltype(nullptr), nullptr>>
+    std::integral_constant<std::nullptr_t, nullptr>>
 {
-  using f = decltype(nullptr);
+  using f = std::nullptr_t;
 };
 
 /**
@@ -79,7 +75,10 @@ struct function_traits_impl<RType( Fun::* )( Args... ) const>
   template <unsigned I>
   using arg = kvasir::mpl::eager::at< kvasir::mpl::list< Args... >, I >;
 };
-} /* END namespace details */
+} // END namespace crect::util::details
+
+namespace crect::util
+{
 
 /**
  * @brief Get the type of an mpl::integral_constant.
@@ -103,7 +102,7 @@ using function_traits =
 template <class T, std::uintptr_t ADDRESS>
 struct memory_mapper
 {
-  static_assert(std::is_pod_v<T>, "T must be POD");
+  static_assert(std::is_trivial_v<T>, "T must be POD / trivial type.");
 };
 
 /**
@@ -117,7 +116,7 @@ constexpr auto priority_to_NVIC_priority(unsigned priority)
 {
   /* Max priority */
   auto N = (1U << __NVIC_PRIO_BITS) - 1U;
-  return ((N - priority) << (8U - __NVIC_PRIO_BITS)) & 0xFFU;
+  return ((N - priority) << (8U - __NVIC_PRIO_BITS)) & 255U;
 }
 
 /**
@@ -134,5 +133,4 @@ constexpr uint32_t hashit(const char *txt)
   return h;
 }
 
-} /* END namespace util */
-} /* END namespace crect */
+} // END namespace crect::util

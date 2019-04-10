@@ -37,4 +37,4 @@ struct resource_access
     return std::forward< Fun >(f)(Resource::as_object());
   }
 };
-}  // namespace crect
+}  // END namespace crect

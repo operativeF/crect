@@ -11,12 +11,18 @@
 
 #include "kvasir/mpl/mpl.hpp"
 #include "crect/details/job_resource_definitions.hpp"
-#include "crect/srp/locks.hpp"
 
-namespace crect
+namespace crect::time
 {
-namespace time
+
+struct DWT_Dummy
 {
+  uint32_t CYCCNT = 10;
+};
+
+static constexpr auto DWT__ = DWT_Dummy{};
+
+
 /**
  * @brief     The definition of the system clock.
  * @details   It is based on the DWT cycle counter for calculating time, this
@@ -25,15 +31,16 @@ namespace time
  *            It is also possible to replace this function with another timer
  *            implementation.
  */
-struct system_clock
+template<int32_t F_CPU = __F_CPU, auto* const DWT_Counter = &DWT__>
+struct sys_clock
 {
   /** @brief  Definition of the duration of timer ticks running at MCU clock. */
-  using duration = std::chrono::duration< int64_t, std::ratio< 1, __F_CPU > >;
+  using duration = std::chrono::duration< int64_t, std::ratio< 1, F_CPU > >;
   using small_duration =
-      std::chrono::duration< int32_t, std::ratio< 1, __F_CPU > >;
-  using rep                   = duration::rep;
-  using period                = duration::period;
-  using time_point            = std::chrono::time_point< system_clock >;
+      std::chrono::duration< int32_t, std::ratio< 1, F_CPU > >;
+  using rep                   = typename duration::rep;
+  using period                = typename duration::period;
+  using time_point            = std::chrono::time_point< sys_clock >;
   static const bool is_steady = false;
 
   /**
@@ -50,8 +57,36 @@ struct system_clock
   static time_point now() noexcept;
 };
 
-} /* END namespace time */
+template<int32_t F_CPU, auto* const DWT_>
+typename sys_clock<F_CPU, DWT_>::time_point sys_clock<F_CPU, DWT_>::now() noexcept
+{
+  /* Holds the current offset from start time due to DWT overflows. */
+  static uint32_t base = 0;
 
+  /* Holds the old DWT value to check for overflows. */
+  static uint32_t old_dwt = 0;
+
+  uint32_t dwt = DWT_->CYCCNT;
+
+  /* If the DWT has overflowed, update the base. */
+  if (old_dwt > dwt)
+    base += 1;
+
+  /* Save old DWT. */
+  old_dwt = dwt;
+
+  return time_point(duration(
+    (static_cast<uint64_t>(base) << 32U) + static_cast<uint64_t>(dwt)
+  ));
+}
+
+using system_clock = sys_clock<>;
+
+} /* END namespace crect::time */
+
+
+namespace crect
+{
 /**
  * @brief   Convenience definition of the clock resource.
  */

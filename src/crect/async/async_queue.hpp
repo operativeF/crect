@@ -7,38 +7,53 @@
 
 #include <chrono>
 #include <array>
+#include <memory>
 #include "crect/clock.hpp"
-#include "crect/timer.hpp"
+//#include "crect/timer.hpp"
 
-extern "C" void _unhandled_exception(void);
+/**
+ * @brief Unhandled exception definition.
+ */
+extern "C" inline void _unhandled_exception(void)
+{
+  while(1);
+}
 
 namespace crect
 {
+
+using isr_id = std::uint32_t;
 
 /**
  * @brief   The linked list that holds future job executions.
  *
  * @tparam N  The size of the async queue.
  */
-template <unsigned N>
+template <unsigned N, typename TClock>
 class async_queue
 {
+public:
+
 private:
+  using time_point = typename TClock::time_point;
+
   /** @brief Definition of each queue element. */
   struct queue_element {
-    time::system_clock::time_point baseline;  /**< Time for exection. */
-    uint32_t job_isr_id;                      /**< The job's ISR ID to pend. */
-    queue_element *next;                      /**< The next element. */
+    time_point baseline;  /**< Time for execution. */
+    isr_id job_isr_id = 0;                      /**< The job's ISR ID to pend. */
+    queue_element *next = nullptr;                      /**< The next element. */
   };
 
+  using p_queue = std::array<queue_element, N>;
+
   /** @brief The queue. */
-  std::array<queue_element, N> _queue;
+  p_queue _queue;
 
   /** @brief Pointer to the head element. */
-  queue_element *_head;
+  queue_element *_head = nullptr;
 
   /** @brief Pointer to the free element. */
-  queue_element *_free;
+  queue_element *_free = _queue.data();
 
 public:
 
@@ -49,21 +64,20 @@ public:
   {
     /**/
     for (unsigned i = 0; i < N - 1; i++)
-      _queue[i].next = &_queue[i + 1];
+    {
+        _queue[i].next = &_queue[i + 1];
+    }
 
     _queue[N - 1].next = nullptr;
-
-    _head = nullptr;
-    _free = _queue.data();
   }
 
   /**
   * @brief   Push an element onto the queue.
   *
   * @param[in] time    The time for the ISR to execute.
-  * @param[in] isr_id  The ISR to execute at said time.
+  * @param[in] id  The ISR to execute at said time.
   */
-  void push(time::system_clock::time_point time, uint32_t isr_id)
+  void insert(time_point time, isr_id id)
   {
     auto _new = _free;
 
@@ -75,7 +89,7 @@ public:
 
     /* Fill in the new node. */
     _new->baseline = time;
-    _new->job_isr_id = isr_id;
+    _new->job_isr_id = id;
     _free = _free->next;
 
     if (_head == nullptr || _head->baseline >= time)
@@ -84,7 +98,7 @@ public:
       _new->next = _head;
       _head = _new;
 
-      timer::pend();
+      //timer::pend();
     }
     else
     {
@@ -102,7 +116,7 @@ public:
   /**
   * @brief   Pop the head of the queue.
   */
-  auto pop()
+  auto pop_front()
   {
     auto _current = _head;
 

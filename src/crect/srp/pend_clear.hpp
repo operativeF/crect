@@ -6,31 +6,51 @@
 #pragma once
 
 #include "stm32f411xe.h"
+#include <crect/vector_table.hpp>
 
 namespace crect
 {
 
-template<auto* const nLocal>
+template<auto* const nvic_ptr>
 struct NVIC_Access
 {
     template<typename Job>
-    constexpr void pend()
+    constexpr void pend(const Job&)
     {
         using ISRn = typename Job::isr::index;
-        nLocal->ISPR[ISRn::value >> 5UL] = (1UL << (ISRn::value & 31UL));
+        nvic_ptr->ISPR[ISRn::value >> 5UL] = (1UL << (ISRn::value & 31UL));
     }
+
+    /*
+    template<typename JobF>
+    constexpr void pend(const JobF&)
+    {
+        // Find the job associated with the function.
+        using job_pend_candidate = kvasir::mpl::find<JobF, system_job_list>;
+
+    }
+    */
 
     constexpr void pend(unsigned id)
     {
-        nLocal->ISPR[id >> 5UL] = (1UL << (id & 31UL));
+        nvic_ptr->ISPR[id >> 5UL] = (1UL << (id & 31UL));
     }
 
     template <typename Job>
-    constexpr void clear()
+    constexpr void clear(const Job&)
     {
       using ISRn = typename Job::isr::index;
-      nLocal->ICPR[ISRn::value >> 5UL] = (1UL << (ISRn::value & 31UL));
+      nvic_ptr->ICPR[ISRn::value >> 5UL] = (1UL << (ISRn::value & 31UL));
     }
+
+    /*
+    template<typename JobF>
+    constexpr void clear(const JobF&)
+    {
+        // Find the job associated with the function.
+
+    }
+    */
 
     /**
      * @brief Clear a pending crect job.
@@ -39,7 +59,7 @@ struct NVIC_Access
      */
     constexpr void clear(unsigned id)
     {
-      nLocal->ICPR[id >> 5UL] = (1UL << (id & 31UL));
+      nvic_ptr->ICPR[id >> 5UL] = (1UL << (id & 31UL));
     }
 };
 

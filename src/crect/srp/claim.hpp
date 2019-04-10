@@ -23,7 +23,7 @@ namespace crect
 template < typename Resource, typename Fun >
 constexpr auto claim(Fun &&f)
 {
-  lock< Resource > lock{};
+  lock< Resource >();
 
   return std::forward< Fun >(f)(Resource::as_object());
 }

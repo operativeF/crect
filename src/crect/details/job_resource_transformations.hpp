@@ -11,11 +11,10 @@
 #include "crect/details/job_resource_definitions.hpp"
 #include "crect/details/job_resource_comparisons.hpp"
 
-namespace crect
-{
-namespace details
-{
+#include <boost/tmp.hpp>
 
+namespace crect::details
+{
 /**************************************************************************/
 /* Job to resource (impl)                                                 */
 /**************************************************************************/
@@ -27,7 +26,7 @@ namespace details
 template < typename... Ts >
 struct job_to_resource_impl
 {
-  static_assert(kvasir::mpl::eager::always_false< Ts... >::value,
+  static_assert(boost::tmp::call_v<boost::tmp::always_< Ts... >>,
                 "Should not come here");
 };
 
@@ -61,7 +60,7 @@ struct job_to_resource_impl< job< Prio, ISR, Res... > >
 template <typename... Ts>
 struct job_to_priority
 {
-  static_assert(kvasir::mpl::eager::always_false<Ts...>::value,
+  static_assert(boost::tmp::call_v<boost::tmp::always_<Ts...>>,
                 "Should not come here");
 };
 
@@ -75,8 +74,7 @@ struct job_to_priority
  * @tparam Res  Parameter pack of resources.
  */
 template <unsigned PRIO, typename ISR, typename... Res>
-struct job_to_priority< job<PRIO, ISR, Res...> > :
-    std::integral_constant<unsigned, PRIO>
+struct job_to_priority< job<PRIO, ISR, Res...> > : boost::tmp::uint_<PRIO>
 {
 };
 
@@ -96,7 +94,7 @@ struct job_to_priority< job<PRIO, ISR, Res...> > :
 template <typename... Ts>
 struct job_to_isr_mask
 {
-  static_assert(kvasir::mpl::eager::always_false<Ts...>::value,
+  static_assert(boost::tmp::call_v<boost::tmp::always_<Ts...>>,
                 "Should not come here");
 };
 
@@ -111,8 +109,7 @@ struct job_to_isr_mask
  * @tparam Res  Parameter pack of resources.
  */
 template <unsigned PRIO, typename ISR, typename... Res>
-struct job_to_isr_mask< job<PRIO, ISR, Res...> > :
-    std::integral_constant<unsigned, (1u << (ISR::index::value % 32))>
+struct job_to_isr_mask< job<PRIO, ISR, Res...> > : boost::tmp::uint_<1U << (ISR::index::value % 32)>
 {
 };
 
@@ -127,7 +124,7 @@ struct job_to_isr_mask< job<PRIO, ISR, Res...> > :
 template < typename... Ts >
 struct merge_resources_impl
 {
-  static_assert(kvasir::mpl::eager::always_false< Ts... >::value,
+  static_assert(boost::tmp::call_v<boost::tmp::always_< Ts... >>,
                 "Merging different resources are not allowed");
 };
 
@@ -159,8 +156,10 @@ struct merge_resources_impl< resource< Obj, Unq1, Jobs1... >,
 template < typename R1, typename R2 >
 using merge_resources = typename merge_resources_impl< R1, R2 >::f;
 
-} /* END namespace details */
+} // END namespace crect::details
 
+namespace crect
+{
 /**
  * @brief Takes a job< resource... > and returns resource<job>...
  *
@@ -169,4 +168,4 @@ using merge_resources = typename merge_resources_impl< R1, R2 >::f;
 template < typename Job >
 using job_to_resource = typename details::job_to_resource_impl< Job >::f;
 
-} /* END namespace crect */
+} // END namespace crect

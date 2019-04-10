@@ -11,13 +11,16 @@ set_property(TARGET boost PROPERTY
 enable_testing()
 
 add_executable(main_test
-    unique.test.cpp
+    async_queue.test.cpp
+    clock.test.cpp
     job_resource_transforms.test.cpp
     job_comparisons.test.cpp
+    pend_clear.test.cpp
+    unique.test.cpp
 )
 
 target_compile_features(main_test
-    PRIVATE cxx_std_17
+    PRIVATE cxx_std_20
 )
 
 target_include_directories(main_test

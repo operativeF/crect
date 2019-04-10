@@ -1,4 +1,5 @@
 //          Copyright Emil Fresk 2017.
+//                    Thomas Figueroa 2019.
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE.md or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -10,14 +11,14 @@
 
 #include "kvasir/mpl/mpl.hpp"
 #include "crect/utils.hpp"
+#include <boost/tmp.hpp>
 
 namespace crect
 {
 /**
  * @brief Job maximum priority.
  */
-using max_priority =
-    std::integral_constant< unsigned, (1U << __NVIC_PRIO_BITS) - 1U >;
+using max_priority = boost::tmp::uint_<(1U << __NVIC_PRIO_BITS) - 1>;
 
 /**
  * @brief Job type definition.
@@ -29,7 +30,7 @@ using max_priority =
 template < unsigned Prio, typename ISR, typename... Res >
 struct job
 {
-  using prio      = std::integral_constant< unsigned, Prio >;
+  using prio      = boost::tmp::uint_<Prio>;
   using isr       = ISR;
   using resources = kvasir::mpl::eager::flatten< kvasir::mpl::list< Res... > >;
 
@@ -48,7 +49,7 @@ struct job
 template < typename Object, bool Unique, typename... Jobs >
 struct resource
 {
-  static_assert(kvasir::mpl::eager::always_false< Object >::value,
+  static_assert(boost::tmp::call_v<boost::tmp::always_<Object>>,
                 "The object is not an integral_constant or memory_mapper");
 };
 
@@ -64,7 +65,7 @@ struct resource
 template < auto V, bool Unique, typename... Jobs >
 struct resource< std::integral_constant< decltype(V), V >, Unique, Jobs... >
 {
-  using is_unique = std::bool_constant< Unique >;
+  using is_unique = boost::tmp::bool_< Unique >;
   using jobs      = kvasir::mpl::eager::flatten< kvasir::mpl::list< Jobs... > >;
 
   /**
@@ -99,7 +100,7 @@ struct resource< std::integral_constant< decltype(V), V >, Unique, Jobs... >
 template < typename T, std::uintptr_t Address, bool Unique, typename... Jobs >
 struct resource< util::memory_mapper< T, Address >, Unique, Jobs... >
 {
-  using is_unique = std::bool_constant< Unique >;
+  using is_unique = boost::tmp::bool_< Unique >;
   using jobs      = kvasir::mpl::eager::flatten< kvasir::mpl::list< Jobs... > >;
 
   /**

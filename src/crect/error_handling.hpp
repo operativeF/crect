@@ -9,9 +9,7 @@
 #include "kvasir/mpl/mpl.hpp"
 #include "crect/details/arm_intrinsics.hpp"
 
-namespace crect
-{
-namespace error_handling
+namespace crect::error_handling
 {
 
 /**
@@ -32,5 +30,4 @@ static void halt(const char *reason)
   while(1);
 }
 
-} /* END namespace error_handling */
-} /* END namespace crect */
+} // END namespace crect::error_handling

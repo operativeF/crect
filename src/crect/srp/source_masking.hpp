@@ -21,9 +21,7 @@
 #include "crect/details/resource_tree.hpp"
 #include "crect/details/resource_search.hpp"
 
-namespace crect
-{
-namespace details
+namespace crect::details
 {
 
 /**
@@ -41,8 +39,10 @@ using resource_to_isr_mask_list =
                   job_to_isr_mask
                 > >;
 
-} /* END namespace details */
+} // END namespace crect::details
 
+namespace crect
+{
 /**
  * @brief Extracts the interrupt mask of the jobs connected to the resource.
  *
@@ -57,5 +57,4 @@ using get_source_masking =
                    kvasir::mpl::eager::bitwise_or
                  >;
 
-} /* END namespace crect */
-
+} // END namespace crect

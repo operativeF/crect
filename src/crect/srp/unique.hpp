@@ -8,9 +8,7 @@
 #include "kvasir/mpl/mpl.hpp"
 #include "crect/srp/prioirty_ceiling.hpp"
 
-namespace crect
-{
-namespace details
+namespace crect::details
 {
 
 /**
@@ -82,7 +80,10 @@ using jobs_to_unique_sorted = kvasir::mpl::eager::sort<
       details::jobs_to_unique_resource<JobList>,
       details::_different_resource_id_2r >;
 
-} /* END namespace details */
+} // END namespace crect::details
+
+namespace crect
+{
 
 /**
  * @brief Takes a list of jobs and checks if any unique resource is used more
@@ -107,7 +108,7 @@ using get_unique_job_from_resource = typename kvasir::mpl::eager::pop_front<
   >::front;
 
 
-} /* END namespace crect */
+} // END namespace crect
 
 
 

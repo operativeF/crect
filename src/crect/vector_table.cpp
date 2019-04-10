@@ -7,13 +7,6 @@
 #include "crect/crect.hpp"
 #include "crect/vector_table.hpp"
 
-/**
- * @brief Unhandled exception definition.
- */
-extern "C" void _unhandled_exception(void)
-{
-  while(1);
-}
 
 /**
  * @brief Save vector table to the correct location.

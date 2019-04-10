@@ -12,9 +12,7 @@
 #include "kvasir/mpl/mpl.hpp"
 #include "crect/utils.hpp"
 
-namespace crect
-{
-namespace details
+namespace crect::details
 {
 
 /**
@@ -37,7 +35,10 @@ constexpr void for_each_impl(kvasir::mpl::list<Ts...>)
   };
 }
 
-}
+} // END namespace crect::details
+
+namespace crect
+{
 
 /**
  * @brief For-each interface, executes over every type in a list.
@@ -51,6 +52,8 @@ constexpr void for_each(void)
   details::for_each_impl<Fun>(List{});
 }
 
+inline constexpr auto __cortex_m = __CORTEX_M;
+
 /**
  * @brief Code generator for the NVIC initialization code.
  */
@@ -62,20 +65,17 @@ struct job_to_nvic_printer
     using ISRn = typename Job::isr::index;
     using Prio = typename Job::prio;
 
-
-    if (ISRn::value < 0)
+    if constexpr(ISRn::value < 0)
     {
       constexpr auto index = (static_cast<uint32_t>(ISRn::value) & 0xFUL) - 4UL;
 
       /* Enable system interrupt. */
-      if constexpr(__CORTEX_M == 7U)
-      {
+#if (__CORTEX_M == 7U)
         SCB->SHPR[index] = util::priority_to_NVIC_priority(Prio::value);
-      }
-      else
-      {
+#else
         SCB->SHP[index] = util::priority_to_NVIC_priority(Prio::value);
-      }
+#endif
+
     }
     else
     {

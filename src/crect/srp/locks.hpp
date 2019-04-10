@@ -40,7 +40,7 @@ public:
   /* Save old BASEPRI before execution of constructor body as per
    * C++ Standard §12.6.2 */
   {
-#if __CORTEX_M == 7U
+#if (__CORTEX_M == 7U)
     // Fix for the Cortex-M7 Errata: setting of BASEPRI must be done with all
     // ISRs disabled
     critical_lock lock{};

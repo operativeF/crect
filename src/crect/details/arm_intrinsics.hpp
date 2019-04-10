@@ -7,7 +7,7 @@
 
 #include <cstdint>
 
-namespace crect
+namespace crect::arm_intrinsics
 {
 
 /**
@@ -15,8 +15,6 @@ namespace crect
  *          too much and does not seem to be stable, this is to cut the
  *          dependency on it.
  */
-namespace arm_intrinsics
-{
 
 /**
  * @brief     Get Base Priority
@@ -158,17 +156,20 @@ __attribute__((always_inline)) static inline void barrier_entry()
    * Instructions - Application Note 321", paragraph 4.8, the barrier
    * instructions are not needed for Cortex-M >= M3.
    */
-#if __CORTEX_M  >= 3
+  if constexpr(__cortex_m  >= 3)
+  {
   /* No synchronization as >= Cortex-M3 uses the MSR instruction to manipulate
    * priorities.
    */
   asm volatile("" ::: "memory");
-#else
+  }
+  else
+  {
   /* Synchronization instructions are only needed with the Cortex-M0, as it is
    * using source masking in the NVIC to manipulate priorities.
    */
   asm volatile("dsb 0xF\nisb 0xF\n" ::: "memory");
-#endif
+  }
 }
 
 /**
@@ -189,5 +190,4 @@ __attribute__((always_inline)) static inline void barrier_exit()
   asm volatile("" ::: "memory");
 }
 
-} /* END namespace arm_intrinsics */
-} /* END namespace crect */
+} /* END namespace crect::arm_intrinsics */

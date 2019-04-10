@@ -54,14 +54,14 @@ BOOST_AUTO_TEST_CASE(pend_clear_test)
 
     crect::NVIC_Access<&nvic_local> nvic_base;
 
-    nvic_base.pend<jobA>();
+    nvic_base.pend(jobA{});
     BOOST_TEST(( nvic_local.ISPR[jobA::isr::index::value] == 1 ));
-    nvic_base.clear<jobA>();
+    nvic_base.clear(jobA{});
     BOOST_TEST(( nvic_local.ICPR[jobA::isr::index::value] == 1 ));
 
-	nvic_base.pend<jobA_copy>();
+	nvic_base.pend(jobA_copy{});
     BOOST_TEST(( nvic_local.ISPR[jobA_copy::isr::index::value] == 1 ));
-    nvic_base.clear<jobA_copy>();
+    nvic_base.clear(jobA_copy{});
     BOOST_TEST(( nvic_local.ICPR[jobA::isr::index::value] == 1 ));
 
 }

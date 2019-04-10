@@ -5,16 +5,13 @@
 
 #pragma once
 
-
-namespace crect
-{
-namespace timer
+namespace crect::timer
 {
 
 /**
  * @brief   Convenience definition of the max SysTick duration.
  */
-static const constexpr auto max_systick_duration =
+inline constexpr auto max_systick_duration =
   crect::time::system_clock::duration{SysTick_LOAD_RELOAD_Msk};
 
 /**
@@ -22,7 +19,7 @@ static const constexpr auto max_systick_duration =
  */
 inline void pend()
 {
-  SCB->ICSR |= SCB_ICSR_PENDSTSET_Msk;
+  //SCB->ICSR |= SCB_ICSR_PENDSTSET_Msk;
 }
 
 /**
@@ -36,5 +33,4 @@ inline void initialize()
   SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;
 }
 
-} /* END namespace timer */
-} /* END namespace crect */
+} // END namespace crect::timer

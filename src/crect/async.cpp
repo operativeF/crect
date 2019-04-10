@@ -8,11 +8,7 @@
 #include "crect/timer.hpp"
 
 
-crect::async_queue<__CRECT_ASYNC_QUEUE_SIZE> crect_async_queue;
-
-namespace crect
-{
-namespace timer
+namespace crect::timer
 {
 
 /**
@@ -58,7 +54,6 @@ inline void set_max()
 }
 
 
-} /* END namespace timer */
 } /* END namespace crect */
 
 
