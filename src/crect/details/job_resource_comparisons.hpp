@@ -6,10 +6,13 @@
 #pragma once
 
 #include "kvasir/mpl/mpl.hpp"
+#include <boost/tmp.hpp>
 #include "crect/details/job_resource_definitions.hpp"
 
 namespace crect::details
 {
+
+namespace tmp = boost::tmp;
 
 /**************************************************************************/
 /* Comparisons                                                            */
@@ -21,11 +24,11 @@ namespace crect::details
  * @tparam A   Left hand side.
  * @tparam B   Right hand side.
  */
-template < typename A >
+template<typename A>
 struct _same_job_id
 {
-  template < typename B >
-  using f = std::is_same< typename A::isr, typename B::isr >;
+  template<typename B>
+  using f = tmp::call_<tmp::is_<A>, B>;
 };
 
 /**
@@ -34,11 +37,11 @@ struct _same_job_id
  * @tparam A   Left hand side.
  * @tparam B   Right hand side.
  */
-template < typename A >
+template<typename A>
 struct _same_resource_id
 {
-  template < typename B >
-  using f = std::is_same< typename A::object, typename B::object >;
+  template<typename B>
+  using f = tmp::call_<tmp::is_<typename A::object>, typename B::object >;
 };
 
 /**
@@ -50,9 +53,8 @@ struct _same_resource_id
 template < typename A >
 struct _different_resource_id
 {
-  template < typename B >
-  using f = kvasir::mpl::eager::invert<
-      typename _same_resource_id< A >::template f< B > >;
+  template<typename B>
+  using f = tmp::call_<tmp::lift_<_same_resource_id<A>::template f, tmp::not_<>>, B>;
 };
 
 /**
@@ -61,8 +63,11 @@ struct _different_resource_id
  * @tparam A   Left hand side.
  * @tparam B   Right hand side.
  */
-template < typename A, typename B >
-using _different_resource_id_2r =
-    typename _different_resource_id< A >::template f< B >;
+//template < typename A, typename B >
+//using _different_resource_id_2r =
+//    typename _different_resource_id< A >::template f< B >;
+
+template<typename A, typename B>
+using _different_resource_id_2r = typename _different_resource_id<A>::template f<B>;
 
 } // END namespace crect::details

@@ -6,7 +6,7 @@
 #pragma once
 
 #include "stm32f411xe.h"
-#include <crect/vector_table.hpp>
+//#include <crect/vector_table.hpp>
 
 namespace crect
 {

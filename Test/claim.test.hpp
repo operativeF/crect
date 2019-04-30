@@ -5,14 +5,13 @@
  *      Author: Thomas Figueroa
  */
 
-#include <boost/test/unit_test.hpp>
 //#include <crect/srp/claim.hpp>
 
-BOOST_AUTO_TEST_CASE(claimtest)
+namespace claim_test
 {
     // Verify that a locked resource cannot be accessed by anyone else.
     // Try to claim an object inside of a job that doesn't have access.
     
     // Need the ability to mock a priority
     // Need the ability to mock a lock
-}
+} // end namespace claim_test

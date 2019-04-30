@@ -15,10 +15,13 @@
 
 namespace crect
 {
+
+namespace tmp = boost::tmp;
+
 /**
  * @brief Job maximum priority.
  */
-using max_priority = boost::tmp::uint_<(1U << __NVIC_PRIO_BITS) - 1>;
+using max_priority = tmp::uint_<(1U << __NVIC_PRIO_BITS) - 1>;
 
 /**
  * @brief Job type definition.
@@ -30,9 +33,9 @@ using max_priority = boost::tmp::uint_<(1U << __NVIC_PRIO_BITS) - 1>;
 template < unsigned Prio, typename ISR, typename... Res >
 struct job
 {
-  using prio      = boost::tmp::uint_<Prio>;
+  using prio      = tmp::uint_<Prio>;
   using isr       = ISR;
-  using resources = kvasir::mpl::eager::flatten< kvasir::mpl::list< Res... > >;
+  using resources = tmp::list_< Res... >; // @TODO: Should this be flattened?
 
   /* Using < for now, comes from setting basepri = 0 has no effect. */
   static_assert(Prio < max_priority::value,
@@ -49,7 +52,7 @@ struct job
 template < typename Object, bool Unique, typename... Jobs >
 struct resource
 {
-  static_assert(boost::tmp::call_v<boost::tmp::always_<Object>>,
+  static_assert(tmp::call_v<tmp::always_<Object>>,
                 "The object is not an integral_constant or memory_mapper");
 };
 
@@ -65,8 +68,8 @@ struct resource
 template < auto V, bool Unique, typename... Jobs >
 struct resource< std::integral_constant< decltype(V), V >, Unique, Jobs... >
 {
-  using is_unique = boost::tmp::bool_< Unique >;
-  using jobs      = kvasir::mpl::eager::flatten< kvasir::mpl::list< Jobs... > >;
+  using is_unique = tmp::bool_< Unique >;
+  using jobs      = tmp::list_< Jobs... >; // @TODO: Should this list be flattened?
 
   /**
    * @brief     Converts the integral_constant to a reference to the object.
@@ -100,8 +103,8 @@ struct resource< std::integral_constant< decltype(V), V >, Unique, Jobs... >
 template < typename T, std::uintptr_t Address, bool Unique, typename... Jobs >
 struct resource< util::memory_mapper< T, Address >, Unique, Jobs... >
 {
-  using is_unique = boost::tmp::bool_< Unique >;
-  using jobs      = kvasir::mpl::eager::flatten< kvasir::mpl::list< Jobs... > >;
+  using is_unique = tmp::bool_< Unique >;
+  using jobs      = tmp::list_< Jobs... >; // @TODO: Should this list be flattened?
 
   /**
    * @brief     Converts the memory_mapper to an reference to the object.

@@ -5,10 +5,12 @@
  *      Author: Thomas Figueroa
  */
 
-#include <boost/test/unit_test.hpp>
-
-BOOST_AUTO_TEST_CASE(UniqueTest)
+namespace unique_test
 {
 
-
+int run()
+{
+    return 0;
 }
+
+} // end namespace unique_test

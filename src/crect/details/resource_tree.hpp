@@ -42,7 +42,7 @@ struct make_resource_tree_impl
 };
 
 /**
- * @brief Creates a list of resources where each job associated do a resource
+ * @brief Creates a list of resources where each job associated to a resource
  *        is bundled with it.
  *
  * @note  End of recursion.

@@ -15,6 +15,9 @@
 
 namespace crect::details
 {
+
+namespace tmp = boost::tmp;
+
 /**************************************************************************/
 /* Job to resource (impl)                                                 */
 /**************************************************************************/
@@ -26,7 +29,7 @@ namespace crect::details
 template < typename... Ts >
 struct job_to_resource_impl
 {
-  static_assert(boost::tmp::call_v<boost::tmp::always_< Ts... >>,
+  static_assert(tmp::call_v<tmp::always_< Ts... >>,
                 "Should not come here");
 };
 
@@ -40,9 +43,12 @@ struct job_to_resource_impl
 template < unsigned Prio, typename ISR, typename... Res >
 struct job_to_resource_impl< job< Prio, ISR, Res... > >
 {
-  using f =
-      kvasir::mpl::list< resource< typename Res::object, Res::is_unique::value,
-                                   job< Prio, ISR > >... >;
+  //using f =
+  //    kvasir::mpl::list< resource< typename Res::object, Res::is_unique::value,
+  //                                 job< Prio, ISR > >... >;
+
+  using f = tmp::list_< resource< typename Res::object, Res::is_unique::value,
+                                         job< Prio, ISR > >... >;
 };
 
 
@@ -60,7 +66,7 @@ struct job_to_resource_impl< job< Prio, ISR, Res... > >
 template <typename... Ts>
 struct job_to_priority
 {
-  static_assert(boost::tmp::call_v<boost::tmp::always_<Ts...>>,
+  static_assert(tmp::call_v<tmp::always_<Ts...>>,
                 "Should not come here");
 };
 
@@ -74,7 +80,7 @@ struct job_to_priority
  * @tparam Res  Parameter pack of resources.
  */
 template <unsigned PRIO, typename ISR, typename... Res>
-struct job_to_priority< job<PRIO, ISR, Res...> > : boost::tmp::uint_<PRIO>
+struct job_to_priority< job<PRIO, ISR, Res...> > : tmp::uint_<PRIO>
 {
 };
 
@@ -94,7 +100,7 @@ struct job_to_priority< job<PRIO, ISR, Res...> > : boost::tmp::uint_<PRIO>
 template <typename... Ts>
 struct job_to_isr_mask
 {
-  static_assert(boost::tmp::call_v<boost::tmp::always_<Ts...>>,
+  static_assert(tmp::call_v<tmp::always_<Ts...>>,
                 "Should not come here");
 };
 
@@ -109,7 +115,7 @@ struct job_to_isr_mask
  * @tparam Res  Parameter pack of resources.
  */
 template <unsigned PRIO, typename ISR, typename... Res>
-struct job_to_isr_mask< job<PRIO, ISR, Res...> > : boost::tmp::uint_<1U << (ISR::index::value % 32)>
+struct job_to_isr_mask< job<PRIO, ISR, Res...> > : tmp::uint_<1U << (ISR::index::value % 32)>
 {
 };
 
@@ -124,7 +130,7 @@ struct job_to_isr_mask< job<PRIO, ISR, Res...> > : boost::tmp::uint_<1U << (ISR:
 template < typename... Ts >
 struct merge_resources_impl
 {
-  static_assert(boost::tmp::call_v<boost::tmp::always_< Ts... >>,
+  static_assert(tmp::call_v<tmp::always_< Ts... >>,
                 "Merging different resources are not allowed");
 };
 

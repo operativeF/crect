@@ -11,8 +11,13 @@
 #include "crect/details/job_resource_transformations.hpp"
 #include "crect/details/resource_tree.hpp"
 
+#include <boost/tmp.hpp>
+
 namespace crect::details
 {
+
+namespace tmp = boost::tmp;
+
 /**
  * @brief Finds a non-unique resource in the resource tree (implementation).
  *
@@ -26,7 +31,7 @@ struct find_resource_impl
   using f = kvasir::mpl::eager::find_if<resource_tree<JobList>,
                                     _same_resource_id<Resource>::template f >;
 
-  static_assert(!std::is_same_v< f, kvasir::mpl::list<> >,
+  static_assert(!std::is_same_v< f, tmp::list_<> >,
                 "The resource in not registered in crect");
 
   static_assert(kvasir::mpl::eager::pop_front<f>::front::is_unique::value == false,
@@ -46,11 +51,18 @@ struct find_unique_resource_impl
   using f = kvasir::mpl::eager::find_if<resource_tree<JobList>,
                                     _same_resource_id<Resource>::template f >;
 
-  static_assert(!std::is_same_v< f, kvasir::mpl::list<> >,
-                "The resource in not registered in crect");
+  //using f = tmp::call_<tmp::find_if_<tmp::lift_<_same_resource_id<Resource>>, resource_tree<JobList>>>;
 
-  static_assert(kvasir::mpl::eager::pop_front<f>::front::is_unique::value == true,
-                "Found normal resource when unique was requested");
+  //static_assert(!std::is_same_v< f, kvasir::mpl::list<> >,
+  //              "The resource in not registered in crect");
+
+
+  static_assert(!std::is_same_v<f, tmp::list_<>>,
+                "The resource in not registered in crect");
+                
+
+  //static_assert(kvasir::mpl::eager::pop_front<f>::front::is_unique::value == true,
+  //              "Found normal resource when unique was requested");
 };
 
 /**
