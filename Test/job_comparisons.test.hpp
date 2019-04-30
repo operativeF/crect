@@ -17,13 +17,13 @@ namespace job_comparisons_test
 struct OBJ_A {};
 struct OBJ_B {};
 
+inline OBJ_A objA {};
+inline OBJ_B objB {};
+
 inline void JOB_A() {};
 
 int run()
 {    
-    static OBJ_A objA {};
-    static OBJ_B objB {};
-    
     using namespace crect::details;
 
     namespace tmp = boost::tmp;

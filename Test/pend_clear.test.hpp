@@ -20,8 +20,8 @@ namespace pend_clear_test
 struct OBJ_A {};
 struct OBJ_B {};
 
-static OBJ_A objA {};
-static OBJ_B objB {};
+inline OBJ_A objA {};
+inline OBJ_B objB {};
 
 struct NVIC_type
 {
@@ -31,10 +31,10 @@ struct NVIC_type
     std::uint32_t ICPR[8U];
 };
 
+inline NVIC_type nvic_local;
+
 int run()
 {
-    static NVIC_type nvic_local;
-
     // Dummy job functions
     void job1();
     void job2();

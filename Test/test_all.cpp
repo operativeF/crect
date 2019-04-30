@@ -18,6 +18,7 @@ int main()
     std::thread job4(pend_clear_test::run);
     std::thread job5(source_masking_test::run);
     std::thread job6(unique_test::run);
+    std::thread job7(clock_test::run);
 
     job1.join();
     job2.join();
@@ -25,6 +26,7 @@ int main()
     job4.join();
     job5.join();
     job6.join();
+    job7.join();
 
     return 0;
 }

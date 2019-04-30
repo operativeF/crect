@@ -14,19 +14,19 @@
 namespace job_resource_transforms_test
 {
 
+// Dummy objects
+struct OBJ_A {};
+struct OBJ_B {};
+
+inline OBJ_A objA {};
+inline OBJ_B objB {};
+
 int run()
 {
     // Dummy ISR
     using isrA      = crect::make_isr<nullptr, 0>;
     using isrA_copy = crect::make_isr<nullptr, 0>;
     using isrB      = crect::make_isr<nullptr, 1>;
-
-    // Dummy objects
-    struct OBJ_A {};
-    struct OBJ_B {};
-
-    static OBJ_A objA {};
-    static OBJ_B objB {};
 
     // Dummy resources
     using resA      = crect::make_resource<CRECT_OBJECT_LINK(objA)>;
